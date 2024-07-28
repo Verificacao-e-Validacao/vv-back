@@ -1,0 +1,22 @@
+# Não manda os bancos
+*.sqlite
+
+# Python
+*.pyc
+__pycache__/
+
+# Não manda os arquivos cache do Python
+*pyc
+
+.env
+.venv
+
+# VS Code
+.vscode/
+
+media
+
+node_modules
+package-lock.json
+.parcel-cache
+.venv
