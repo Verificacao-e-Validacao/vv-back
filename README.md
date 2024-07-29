@@ -1,7 +1,7 @@
 # Sistema de Gerenciamento de Mercado
 
 ## Projeto da Disciplina PET1696 - VERIFICAÇÃO E VALIDAÇÃO DE SOFTWARE - 2023.2
-> Professor: [ALYSSON FILGUEIRA MILANEZ]
+> Professor: [ALYSSON FILGUEIRA MILANEZ](https://sigaa.ufersa.edu.br/sigaa/public/docente/portal.jsf?siape=1090203)
 Curso: [Bacharel em Engenharia de Software](https://engsoftwarepaudosferros.ufersa.edu.br/apresentacao/) - UFERSA - Campus Pau dos Ferros
 
 
