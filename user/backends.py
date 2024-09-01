@@ -1,15 +1,13 @@
-from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth import get_user_model
+from django.contrib.auth.backends import BaseBackend
 from user.models import Gerente
 
-class GerenteBackend(ModelBackend):
+class GerenteBackend(BaseBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
-        UserModel = get_user_model()
         try:
-            user = UserModel.objects.get(username=username)
-            if user.check_password(password) and isinstance(user, Gerente):
+            user = Gerente.objects.get(username=username)
+            if user.check_password(password):
                 return user
-        except UserModel.DoesNotExist:
+        except Gerente.DoesNotExist:
             return None
 
     def get_user(self, user_id):
