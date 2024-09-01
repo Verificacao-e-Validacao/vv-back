@@ -2,7 +2,7 @@ from rest_framework import filters, viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from user.models import Gerente
-from user.serializer import GerenteSerializer
+from user.serializers import GerenteSerializer
 
 
 class GerenteViewSet(viewsets.ModelViewSet):
