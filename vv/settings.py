@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     #Apps
     'produtos',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +55,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'vv.urls'
+
+AUTHENTICATION_BACKENDS = [
+    'user.backends.GerenteBackend',
+    'django.contrib.auth.backends.ModelBackend'
+]
+
 
 TEMPLATES = [
     {
