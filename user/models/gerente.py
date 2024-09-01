@@ -17,7 +17,7 @@ class Gerente(AbstractUser):
         help_text='The groups this user belongs to.',
         verbose_name='groups',
     )
-    
+
     user_permissions = models.ManyToManyField(
         'auth.Permission',
         related_name='caixa_set',
@@ -27,5 +27,6 @@ class Gerente(AbstractUser):
     )
 
     class Meta:
+        app_label = 'user'
         verbose_name = 'Gerente'
         verbose_name_plural = 'Gerentes'
