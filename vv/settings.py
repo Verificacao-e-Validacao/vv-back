@@ -58,6 +58,7 @@ ROOT_URLCONF = 'vv.urls'
 
 AUTHENTICATION_BACKENDS = [
     'user.backends.GerenteBackend',
+    'user.backends.CaixaBackend',
     'django.contrib.auth.backends.ModelBackend'
 ]
 
