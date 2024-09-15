@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from ..models import Venda
-
+from ..forms import VendaForm
 
 @admin.register(Venda)
 class VendaAdmin(admin.ModelAdmin):
@@ -16,5 +16,7 @@ class VendaAdmin(admin.ModelAdmin):
         'id',
         'vendedor',
     ]
+
+    form = VendaForm
 
     readonly_fields = ['data_venda']

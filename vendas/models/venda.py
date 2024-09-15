@@ -1,12 +1,22 @@
 from django.db import models
-
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 class Venda(models.Model):
 
-    vendedor = models.ForeignKey(
-        'auth.User',
+    vendedor_content_type = models.ForeignKey(
+        ContentType, 
         on_delete=models.CASCADE,
+        null=True, blank=True,
     )
+
+    vendedor_object_id = models.PositiveIntegerField(null=True, blank=True)
+
+    vendedor = GenericForeignKey(
+        'vendedor_content_type', 
+        'vendedor_object_id'
+    )
+
     valor_total = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
