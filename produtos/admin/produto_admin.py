@@ -1,6 +1,6 @@
 from django.contrib import admin
 from produtos.models import Produto
-
+from .estoque_inline import EstoqueInline
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
@@ -15,3 +15,5 @@ class ProdutoAdmin(admin.ModelAdmin):
         'nome',
         'codigo',
     ]
+
+    inlines = [EstoqueInline]
