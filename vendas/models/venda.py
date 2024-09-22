@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
-
+from produtos.models import Produto
 class Venda(models.Model):
 
     vendedor_content_type = models.ForeignKey(
@@ -25,6 +25,19 @@ class Venda(models.Model):
 
     data_venda = models.DateTimeField(
         auto_now_add=True
+    )
+
+    produto = models.ForeignKey(
+        Produto, 
+        on_delete=models.CASCADE, 
+        related_name='venda_produto',
+        verbose_name="Produto",
+        null=True,
+    )
+
+    quantidade_venda = models.PositiveIntegerField(
+        help_text="Quantidade vendida de produtos",
+        default=0
     )
 
     def __str__(self):
