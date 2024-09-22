@@ -20,6 +20,11 @@ class Estoque(models.Model):
         help_text="Peso do produto em quilogramas",
     )
 
+    valor_compra = models.DecimalField(
+        max_digits=10, decimal_places=2,
+        help_text="Valor de compra do produto"
+    )
+
     quantidade = models.IntegerField(
         help_text="Quantidade disponível em estoque"
     )
