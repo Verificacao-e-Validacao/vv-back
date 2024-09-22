@@ -17,12 +17,6 @@ class Produto(models.Model):
         help_text="Descrição do produto"
     )
 
-    peso = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        help_text="Peso do produto em quilogramas",
-    )
-
     valor_compra = models.DecimalField(
         max_digits=10, decimal_places=2,
         help_text="Valor de compra do produto"
@@ -31,14 +25,6 @@ class Produto(models.Model):
     valor_venda = models.DecimalField(
         max_digits=10, decimal_places=2,
         help_text="Valor de venda do produto"
-    )
-
-    quantidade = models.IntegerField(
-        help_text="Quantidade disponível em estoque"
-    )
-
-    vencimento = models.DateField(
-        help_text="Data de vencimento do produto"
     )
 
     detalhes = models.TextField(
