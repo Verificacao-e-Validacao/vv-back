@@ -8,6 +8,7 @@ class ProdutoAdmin(admin.ModelAdmin):
         'id',
         'nome',
         'codigo',
+        'total_estoque',
     ]
 
     search_fields = [

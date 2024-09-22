@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.db.models import Sum
 
 class Produto(models.Model):
     nome = models.CharField(
@@ -25,6 +25,12 @@ class Produto(models.Model):
     detalhes = models.TextField(
         blank=True, null=True, help_text="Detalhes adicionais sobre o produto"
     )
+
+    @property
+    def total_estoque(self):
+
+        total_quantidade = self.movimentacoes_estoque.aggregate(total=Sum('quantidade'))['total']
+        return total_quantidade or 0 
 
     def __str__(self):
         """Método que retorna a representação do objeto como string."""
