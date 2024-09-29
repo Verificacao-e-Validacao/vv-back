@@ -27,3 +27,15 @@ class ProdutoViewSetTest(APITestCase):
         response = self.client.get(self.url_list)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)  # Deve haver 1 produto criado
+
+    def test_create_produto(self):
+        """Testa se um novo produto pode ser criado"""
+        data = {
+            "nome": "Produto Novo",
+            "codigo": 456,
+            "descricao": "Novo produto",
+            "valor_venda": "200.00",
+        }
+        response = self.client.post(self.url_list, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Produto.objects.count(), 2)  # Deve haver 2 produtos no banco de dados
