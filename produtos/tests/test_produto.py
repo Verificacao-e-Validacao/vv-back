@@ -53,3 +53,10 @@ class ProdutoViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.produto.refresh_from_db()
         self.assertEqual(self.produto.nome, "Produto Atualizado")
+
+    def test_delete_produto(self):
+        """Testa se um produto pode ser deletado"""
+        url_detail = f'/api/produtos/{self.produto.pk}/'  # URL de detalhe do produto
+        response = self.client.delete(url_detail)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Produto.objects.count(), 0)
