@@ -60,3 +60,9 @@ class ProdutoViewSetTest(APITestCase):
         response = self.client.delete(url_detail)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Produto.objects.count(), 0)
+
+    def test_search_produto(self):
+        """Testa se a busca de produto está funcionando"""
+        response = self.client.get(self.url_list, {'search': 'Produto Teste'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)  # Deve retornar 1 produto
