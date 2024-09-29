@@ -1,2 +1,0 @@
-Fazer rota de vendas de produtos
-fazer testes

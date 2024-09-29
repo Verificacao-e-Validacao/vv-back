@@ -39,3 +39,17 @@ class ProdutoViewSetTest(APITestCase):
         response = self.client.post(self.url_list, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Produto.objects.count(), 2)  # Deve haver 2 produtos no banco de dados
+
+    def test_update_produto(self):
+        """Testa se um produto pode ser atualizado"""
+        url_detail = f'/api/produtos/{self.produto.pk}/'  # URL de detalhe do produto
+        data = {
+            "nome": "Produto Atualizado",
+            "codigo": 789,
+            "descricao": "Descrição atualizada",
+            "valor_venda": "150.00",
+        }
+        response = self.client.put(url_detail, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.produto.refresh_from_db()
+        self.assertEqual(self.produto.nome, "Produto Atualizado")
