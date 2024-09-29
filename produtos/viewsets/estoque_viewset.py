@@ -2,7 +2,7 @@ from rest_framework import filters, viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from ..models import Estoque
-from produtos.models import EstoqueSerializer
+from produtos.serializers import EstoqueSerializer
 
 
 class EstoqueViewSet(viewsets.ModelViewSet):
