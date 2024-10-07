@@ -29,4 +29,10 @@ class EstoqueViewSetTest(APITestCase):
             vencimento=date(2024, 12, 31)
         )
 
-        self.url_list = '/api/estoques/'
+        self.url_list = '/api/estoque/'
+    
+    def test_list_estoques(self):
+        """Testa se a listagem de estoques está funcionando"""
+        response = self.client.get(self.url_list)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1) 
