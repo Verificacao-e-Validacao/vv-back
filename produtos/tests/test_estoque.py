@@ -50,6 +50,20 @@ class EstoqueViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Estoque.objects.count(), 2)
 
+    def test_create_estoque_quantidade_negativa(self):
+        """Testa se a criação de uma movimentação de estoque com quantidade negativa é rejeitada"""
+        data = {
+            "produto": self.produto.pk,
+            "peso": "5.75",
+            "valor_compra": "25.00",
+            "quantidade": -10,
+            "vencimento": "2024-12-31"
+        }
+        response = self.client.post(self.url_list, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('quantidade', response.data)
+        self.assertEqual(Estoque.objects.count(), 1)
+
     def test_update_estoque(self):
         """Testa se uma movimentação de estoque pode ser atualizada"""
         url_detail = f'/api/estoque/{self.estoque.pk}/'
