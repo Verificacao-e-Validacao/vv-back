@@ -1,5 +1,6 @@
 from django.db import models
 from .produto import Produto
+from django.core.exceptions import ValidationError
 
 class Estoque(models.Model):
     produto = models.ForeignKey(
@@ -32,6 +33,10 @@ class Estoque(models.Model):
     vencimento = models.DateField(
         help_text="Data de vencimento do produto"
     )
+
+    def clean(self):
+        if self.quantidade < 0:
+            raise ValidationError('A quantidade não pode ser negativa.')
 
     def __str__(self):
         return f"{self.produto.nome} - {self.quantidade}"
