@@ -65,3 +65,10 @@ class EstoqueViewSetTest(APITestCase):
         self.estoque.refresh_from_db()
         self.assertEqual(self.estoque.peso, 15.00)
         self.assertEqual(self.estoque.quantidade, 80)
+    
+    def test_delete_estoque(self):
+        """Testa se uma movimentação de estoque pode ser deletada"""
+        url_detail = f'/api/estoque/{self.estoque.pk}/'
+        response = self.client.delete(url_detail)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Estoque.objects.count(), 0)
