@@ -36,3 +36,16 @@ class EstoqueViewSetTest(APITestCase):
         response = self.client.get(self.url_list)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1) 
+
+    def test_create_estoque(self):
+        """Testa se uma nova movimentação de estoque pode ser criada"""
+        data = {
+            "produto": self.produto.pk,
+            "peso": "5.75",
+            "valor_compra": "25.00",
+            "quantidade": 50,
+            "vencimento": "2024-12-31"
+        }
+        response = self.client.post(self.url_list, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Estoque.objects.count(), 2)
