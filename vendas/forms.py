@@ -6,7 +6,7 @@ from user.models import Caixa, Gerente
 class VendaForm(forms.ModelForm):
     class Meta:
         model = Venda
-        fields = ['vendedor_content_type', 'vendedor_object_id', 'valor_total', 'produto', 'quantidade_venda']
+        fields = ['vendedor_content_type', 'vendedor_object_id', 'valor_total']
 
     def __init__(self, *args, **kwargs):
         super(VendaForm, self).__init__(*args, **kwargs)

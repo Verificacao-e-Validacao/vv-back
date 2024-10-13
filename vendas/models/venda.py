@@ -27,19 +27,6 @@ class Venda(models.Model):
         auto_now_add=True
     )
 
-    produto = models.ForeignKey(
-        Produto, 
-        on_delete=models.CASCADE, 
-        related_name='venda_produto',
-        verbose_name="Produto",
-        null=True,
-    )
-
-    quantidade_venda = models.PositiveIntegerField(
-        help_text="Quantidade vendida de produtos",
-        default=0
-    )
-
     def __str__(self):
         '''Método que retorna a representação do objeto como string.'''
         return f'Venda {self.id} - {self.vendedor}'
