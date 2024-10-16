@@ -3,6 +3,10 @@ from .produto import Produto
 from django.core.exceptions import ValidationError
 
 class Estoque(models.Model):
+    """
+        Realiza a movimentação de estoque para um produto.
+    """
+
     produto = models.ForeignKey(
         Produto, 
         on_delete=models.CASCADE, 
@@ -35,10 +39,19 @@ class Estoque(models.Model):
     )
 
     def clean(self):
+        """
+            Valida os dados antes de salvar e verifica
+            se a quantidade de itens no estoque não é negativa.
+        """
+
         if self.quantidade < 0:
             raise ValidationError('A quantidade não pode ser negativa.')
 
     def __str__(self):
+        """
+        Retorna uma organização da movimentação de estoque com nome e quantidade.
+        """
+
         return f"{self.produto.nome} - {self.quantidade}"
 
     class Meta:
