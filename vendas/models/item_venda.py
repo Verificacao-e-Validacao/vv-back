@@ -23,7 +23,7 @@ class ItemVenda(models.Model):
 
     def __str__(self):
         '''Método que retorna a representação do objeto como string.'''
-        return self.nome
+        return f'Item Venda: {self.id} - Venda: {self.venda.id}'
 
     class Meta:
         '''Sub classe para definir meta atributos da classe principal.'''

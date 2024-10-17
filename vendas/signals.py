@@ -1,14 +1,14 @@
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
-from .models import Venda
+from .models import ItemVenda
 
-@receiver(pre_save, sender=Venda)
+@receiver(pre_save, sender=ItemVenda)
 def verificar_estoque_antes_venda(sender, instance, **kwargs):
 
     produto = instance.produto
     quantidade_estoque = produto.total_estoque
     estoque_produto = produto.movimentacoes_estoque.all()
-    quantidade_venda = instance.quantidade_venda
+    quantidade_venda = instance.quantidade
 
     for estoque in estoque_produto:
         if estoque.quantidade > quantidade_venda:
@@ -25,4 +25,14 @@ def verificar_estoque_antes_venda(sender, instance, **kwargs):
             estoque.delete()
 
     if quantidade_venda:
-        raise ValueError(f"Estoque insuficiente para {produto.nome}. Disponível: {quantidade_estoque}, Solicitado: {instance.quantidade_venda}")
+        raise ValueError(f"Estoque insuficiente para {produto.nome}. Disponível: {quantidade_estoque}, Solicitado: {instance.quantidade}")
+
+@receiver(post_save, sender=ItemVenda)
+def define_valor_total(sender, instance, **kwargs):
+        venda = instance.venda
+        valor_total_venda = 0
+        for item in venda.itens.all():
+            valor_total_venda += (item.valor_unitario * item.quantidade)
+
+        venda.valor_total = valor_total_venda
+        venda.save()
