@@ -2,7 +2,7 @@ from rest_framework import filters, viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from ..models import ItemVenda
-from .arquivo_serializer import ItemVendaSerializer
+from ..serializers.item_venda_serializer import ItemVendaSerializer
 
 
 class ItemVendaViewSet(viewsets.ModelViewSet):

@@ -1,35 +1,55 @@
-from django.test import TestCase
-from produtos.models import Produto
+from rest_framework.test import APITestCase
+from rest_framework import status
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
 from vendas.models import Venda
-from decimal import Decimal
+from produtos.models import Produto
 
-
-class VendaViewSetTestCase(TestCase):
+class VendaViewSetTest(APITestCase):
 
     def setUp(self):
-        # Criação de objetos Produto para serem usados nos testes
-        self.produto1 = Produto.objects.create(
-            nome="Produto Teste 1",
-            codigo=1001,
-            descricao="Descrição do Produto Teste 1",
-            valor_venda=Decimal('10.00')
-        )
+        # Criar um usuário autenticado para ser o vendedor
+        self.user = User.objects.create_user(username='vendedor', password='12345')
+        self.client.login(username='vendedor', password='12345')
 
-        self.produto2 = Produto.objects.create(
-            nome="Produto Teste 2",
-            codigo=1002,
-            descricao="Descrição do Produto Teste 2",
-            valor_venda=Decimal('20.00')
-        )
+        # Criar a ContentType do vendedor
+        self.vendedor_content_type = ContentType.objects.get_for_model(self.user)
 
-        # Criação de uma venda
+        # Criar uma venda de teste
         self.venda = Venda.objects.create(
-            cliente="Cliente Teste",
-            data_venda="2024-10-13"
+            vendedor_content_type=self.vendedor_content_type,
+            vendedor_object_id=self.user.id,
+            valor_total=0
         )
 
-    def test_criacao_produto(self):
-        """Testa a criação de produtos no banco de dados"""
-        self.assertEqual(Produto.objects.count(), 2)
-        self.assertEqual(self.produto1.nome, "Produto Teste 1")
-        self.assertEqual(self.produto2.valor_venda, Decimal('20.00'))
+        # URL para a listagem de vendas
+        self.url_list = '/api/venda/'
+    
+    def test_list_vendas(self):
+        """Testa se a listagem de vendas está funcionando"""
+        response = self.client.get(self.url_list)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    def test_create_venda(self):
+        """Testa se uma nova venda pode ser criada"""
+        data = {
+            "vendedor_content_type": self.vendedor_content_type.id,
+            "vendedor_object_id": self.user.id,
+            "valor_total": "200.00"
+        }
+        response = self.client.post(self.url_list, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Venda.objects.count(), 2)
+    
+    def test_create_venda_valor_invalido(self):
+        """Testa se a criação de uma venda com valor inválido é rejeitada"""
+        data = {
+            "vendedor_content_type": self.vendedor_content_type.id,
+            "vendedor_object_id": self.user.id,
+            "valor_total": "-50.00"
+        }
+        response = self.client.post(self.url_list, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('valor_total', response.data)
+        self.assertEqual(Venda.objects.count(), 1)
