@@ -13,6 +13,7 @@ router.register(r'estoque', EstoqueViewSet)
 router.register(r'venda', VendaViewSet)
 router.register(r'item-venda', ItemVendaViewSet)
 urlpatterns = [
+    path('admin/docs/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
 ]
