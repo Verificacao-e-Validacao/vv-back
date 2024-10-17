@@ -116,3 +116,46 @@ class VendaViewSetTest(APITestCase):
         # Verificar se o valor total foi atualizado
         self.venda.refresh_from_db()
         self.assertEqual(self.venda.valor_total, 300.00)
+    
+    def test_valor_total_atualizado_apos_item_venda(self):
+        """Testa se o valor total da venda é atualizado corretamente após adicionar um item"""
+        # Verifica o valor total inicial da venda
+        self.assertEqual(self.venda.valor_total, 0)
+
+        # Dados do item de venda
+        data = {
+            "venda": self.venda.pk,
+            "produto": self.produto.pk,
+            "quantidade": 2,  # Comprando 2 unidades
+            "valor_unitario": "100.00"  # Valor unitário do produto
+        }
+
+        # Faz a requisição para criar o item de venda
+        response = self.client.post(self.url_list_itens_venda, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Atualiza o objeto venda para refletir as mudanças no banco de dados
+        self.venda.refresh_from_db()
+
+        # Verifica se o valor total da venda foi atualizado corretamente
+        # Valor esperado: 2 unidades * 100.00 (valor_unitário) = 200.00
+        self.assertEqual(self.venda.valor_total, 200.00)
+    
+    def test_delete_item_venda(self):
+        """Testa se um item de venda pode ser deletado e o valor total da venda atualizado"""
+        item_venda = ItemVenda.objects.create(
+            venda=self.venda,
+            produto=self.produto,
+            quantidade=2,
+            valor_unitario=100.00
+        )
+        url_detail_item_venda = f'/api/item-venda/{item_venda.pk}/'
+
+        # Deletar o item de venda
+        response = self.client.delete(url_detail_item_venda)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        # Verificar se o valor total foi atualizado após a remoção do item
+        self.venda.refresh_from_db()
+        self.assertEqual(self.venda.valor_total, 0.00)
+
