@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_app_novadata',
     'django.contrib.admindocs',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,6 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'advanced_filters',
+    'django_admin_listfilter_dropdown',
+    'django_object_actions',
+    'import_export',
+    'novadata_utils',
+    'rangefilter',
     #Libs
     'rest_framework',
     #Apps
@@ -55,6 +62,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+MIDDLEWARE += ('crum.CurrentRequestUserMiddleware',)
 
 ROOT_URLCONF = 'vv.urls'
 

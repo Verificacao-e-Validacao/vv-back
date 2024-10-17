@@ -1,3 +1,8 @@
 djangorestframework==3.14.0
 djangorestframework-jwt==1.0.1
 docutils==0.20.1
+django-app-novadata==0.1.1
+novadata-utils==0.2.5
+twine==4.0.2
+wheel==0.43.0
+setuptools==57.4.0
