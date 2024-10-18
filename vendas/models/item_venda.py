@@ -1,7 +1,8 @@
 from django.db import models
 from produtos.models import Produto
 from .venda import Venda
-
+from django.core.exceptions import ValidationError
+from django.db.models import Sum
 
 class ItemVenda(models.Model):
 
@@ -20,6 +21,14 @@ class ItemVenda(models.Model):
         max_digits=10, 
         decimal_places=2
     )
+
+    def clean(self):
+        """
+            Verifica se existem produtos disponiveis no estoque
+        """
+
+        if self.quantidade > self.produto.movimentacoes_estoque.aggregate(total=Sum('quantidade'))['total']:
+            raise ValidationError('Quantidade indisponivel no estoque.')
 
     def __str__(self):
         '''Método que retorna a representação do objeto como string.'''
