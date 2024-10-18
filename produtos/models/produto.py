@@ -2,6 +2,11 @@ from django.db import models
 from django.db.models import Sum
 
 class Produto(models.Model):
+    """
+    Representa um produto disponível no sistema de gerenciamento.
+
+    """
+
     nome = models.CharField(
         verbose_name="Nome",
         max_length=100,
@@ -28,17 +33,27 @@ class Produto(models.Model):
 
     @property
     def total_estoque(self):
+        """
+        Calcula o total de itens em estoque para este produto.
 
+        O total é calculado somando todas as movimentações de estoque associadas ao produto.
+        Se não houver movimentações, retorna 0.
+        """
         total_quantidade = self.movimentacoes_estoque.aggregate(total=Sum('quantidade'))['total']
         return total_quantidade or 0 
 
     def __str__(self):
-        """Método que retorna a representação do objeto como string."""
+        """
+        Retorna uma string representando o produto.
+
+        """
         return self.nome
 
     class Meta:
-        """Sub classe para definir meta atributos da classe principal."""
-
+        """
+        Define as configurações meta do modelo Produto.
+        
+        """
         app_label = "produtos"
         verbose_name = "Produto"
         verbose_name_plural = "Produtos"
