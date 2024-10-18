@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    {% load static %}  <!-- Carrega as tags estáticas do Django -->
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            width: 90rem;
+            height: 80%;
+            display: flex;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .left {
+            width: 50%;
+            background-image: url('../static/img/source.png');
+            background-size: cover;
+            background-position: center;
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+
+        .login-form {
+            width: 50%;
+            background-color: #f9f4ff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: #3e3e60;
+        }
+
+        p {
+            color: #9a9a9a;
+            margin-bottom: 40px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #8c8c8c;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 80%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 40%;
+            padding: 12px;
+            background-color: #7a29e8;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #5e1db5;
+        }
+
+        a {
+            text-decoration: none;
+            color: #7a29e8;
+            font-size: 0.9rem;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+    <!-- Certifique-se de que o caminho para o arquivo CSS está correto -->
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <!-- A imagem vai aqui -->
+        </div>
+        <div class="login-form">
+            <h2>Olá, seja bem-vindo!</h2>
+            <p>Para acessar a plataforma, faça seu login.</p>
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="input-group">
+                    <label for="email">E-mail</label>
+                    <input type="text" id="email" name="email" placeholder="user.name@mail.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha" placeholder="********" required>
+                </div>
+
+                {% if error %}
+                    <div class="error-message">
+                        <p>{{ error }}</p>
+                    </div>
+                {% endif %}
+
+                <button type="submit" class="btn-login">Entrar</button>
+            </form>
+
+            <p>Esqueceu seu login ou senha? <a href="#">Clique aqui</a></p>
+        </div>
+    </div>
+</body>
+</html>

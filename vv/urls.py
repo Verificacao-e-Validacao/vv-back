@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from user.viewsets import GerenteViewSet
 from produtos.viewsets import ProdutoViewSet, EstoqueViewSet
 from vendas.viewsets import VendaViewSet, ItemVendaViewSet
+from user.view import login_view
 
 
 router = DefaultRouter()
@@ -16,4 +17,5 @@ urlpatterns = [
     path('admin/docs/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('login/', login_view, name='login'),
 ]
