@@ -72,8 +72,10 @@
         .center {
             display: flex;
             justify-content: center;
+            flex-direction: column; /* Permitir que a tabela utilize a altura disponível */
+            overflow-y: auto; /* Adiciona rolagem vertical */
+            max-height: 400px; /* Ajuste conforme necessário */
         }
-
         .lista-produtos {
             width: 100%;
             border-collapse: collapse;
@@ -105,7 +107,6 @@
 
         .footer button {
             padding: 10px 20px;
-            background-color: #28a745;
             color: white;
             border: none;
             border-radius: 5px;
@@ -113,12 +114,25 @@
             font-size: 1rem;
         }
 
-        .footer button:hover {
+        .footer #finalizaCompra {
+            background-color: #28a745;
+        }
+
+        .footer #cancelarCompra {
+            background-color: #e61903;
+        }
+
+        .footer #finalizaCompra:hover {
             background-color: #218838;
+        }
+
+        .footer #cancelarCompra:hover {
+            background-color: #af1111;
         }
     </style>
 </head>
 <body>
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <div class="container">
         <header class="header">
             <div class="logo">
@@ -135,19 +149,12 @@
                     <label for="codigo">Código de Barras</label>
                     <input type="text" id="codigoProduto" placeholder="Digite o código ou nome">
                 </div>
-                <div class="valor-unitario">
-                    <label for="valor">Valor Unitário</label>
-                    <input type="text" id="valor" value="R$ 0,00" disabled>
-                </div>
-                <div class="total-item">
-                    <label for="total-item">Total do Item</label>
-                    <input type="text" id="total-item" value="R$ 0,00" disabled>
                 </div>
                 <div class="quantidade">
                     <label for="quantidade">Quantidade</label>
                     <input type="number" id="quantidade" value="1">
                 </div>
-                <button onclick="iniciarVenda()">Buscar Produto</button>
+                <button id="adicionarProduto" data-venda-id="{{ venda.id }}">Adicionar Produto</button>
             </div>
 
             <div class="center">
@@ -155,10 +162,9 @@
                     <thead>
                         <tr>
                             <th>Código</th>
-                            <th>Descrição</th>
+                            <th>Nome</th>
                             <th>Quantidade</th>
                             <th>Valor Unitário</th>
-                            <th>Total</th>
                         </tr>
                     </thead>
                     <tbody id="tabela-produtos">
@@ -170,7 +176,7 @@
             <div class="right">
                 <div class="subtotal">
                     <label>Subtotal</label>
-                    <span id="subtotal">R$ 0,00</span>
+                    <span id="subtotal">{{venda.valor_total}}</span>
                 </div>
                 <div class="total-recebido">
                     <label>Total Recebido</label>
@@ -184,7 +190,8 @@
         </div>
 
         <footer class="footer">
-            <button onclick="finalizarVenda()">Finalizar Venda</button>
+            <button id="finalizaCompra">Finaliza Compra</button>
+            <button id="cancelarCompra" data-venda-id="{{ venda.id }}">Cancelar Compra</button>
         </footer>
     </div>
 
@@ -193,88 +200,136 @@
         let itensVenda = [];
         let subtotal = 0;
 
-        // Função para adicionar produto à venda
-        async function iniciarVenda() {
-            const codigoOuNome = document.getElementById('codigoProduto').value;
+        function getCSRFToken() {
+            return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        }
+        document.getElementById('adicionarProduto').addEventListener('click', function() {
+            const vendaId = this.getAttribute('data-venda-id');
+            adiciona_produto(vendaId);
+        });
+
+        async function adiciona_produto(vendaId) {
+            const codigoProduto = document.getElementById('codigoProduto').value;
             const quantidade = document.getElementById('quantidade').value;
 
-            // Função de buscar produto (deve ser implementada no seu backend)
-            const produto = await buscarProduto(codigoOuNome);
-
-            if (produto) {
-                const valorUnitario = produto.preco;
-                const totalItem = valorUnitario * quantidade;
-
-                // Atualiza o subtotal
-                subtotal += totalItem;
-                document.getElementById('subtotal').innerText = `R$ ${subtotal.toFixed(2)}`;
-
-                // Adiciona item à tabela de produtos
-                const tabela = document.getElementById('tabela-produtos');
-                const novaLinha = tabela.insertRow();
-                novaLinha.innerHTML = `
-                    <td>${produto.codigo}</td>
-                    <td>${produto.descricao}</td>
-                    <td>${quantidade}</td>
-                    <td>R$ ${valorUnitario.toFixed(2)}</td>
-                    <td>R$ ${totalItem.toFixed(2)}</td>
-                `;
-
-                // Adiciona item ao array de venda
-                itensVenda.push({ produto, quantidade, totalItem });
-            } else {
-                alert("Produto não encontrado");
-            }
-        }
-
-        // Função para calcular o troco
-        function calcularTroco() {
-            const totalRecebido = parseFloat(document.getElementById('total-recebido').value);
-            const troco = totalRecebido - subtotal;
-            document.getElementById('troco').innerText = `R$ ${troco.toFixed(2)}`;
-        }
-
-        // Função para finalizar a venda
-        async function finalizarVenda() {
-            if (itensVenda.length === 0) {
-                alert("Nenhum produto adicionado à venda.");
+            if (!codigoProduto || !quantidade) {
+                alert('Por favor, preencha todos os campos.');
                 return;
             }
 
-            // Registrar venda (deve ser implementado no seu backend)
-            await registrarVenda(itensVenda);
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/venda/${vendaId}/adicionar_produto/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Authorization': 'Bearer SEU_TOKEN_AQUI'
+                    },
+                    body: JSON.stringify({
+                        codigo_produto: codigoProduto,
+                        quantidade: quantidade
+                    })
+                });
 
-            alert("Venda finalizada com sucesso!");
-            // Limpa a tela e os dados após finalizar a venda
-            document.getElementById('tabela-produtos').innerHTML = '';
-            document.getElementById('subtotal').innerText = 'R$ 0,00';
+                if (response.ok) {
+                    const data = await response.json();
+                    const valorTotal = parseFloat(data.valor_total);
+                    if (!isNaN(valorTotal)) {
+                        document.getElementById('subtotal').innerText = valorTotal.toFixed(2);
+                    } else {
+                        console.error("Valor total inválido", data.valor_total);
+                    }
+                    console.log(data);
+                    await atualiza_tabela_produtos(vendaId);
+                } else {
+                    const errorData = await response.json();
+                    alert(`Erro: ${errorData.detail || 'Falha ao adicionar o produto.'}`);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao adicionar o produto.');
+            }
+        }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const vendaId = document.getElementById('adicionarProduto').getAttribute('data-venda-id');
+        atualiza_tabela_produtos(vendaId);
+    });
+
+    async function atualiza_tabela_produtos(vendaId) {
+        const response = await fetch(`http://127.0.0.1:8000/api/item-venda/?venda=${vendaId}`);
+        if (response.ok) {
+            const itens = await response.json();
+            const tabelaProdutos = document.getElementById('tabela-produtos');
+            tabelaProdutos.innerHTML = ''; // Limpa a tabela antes de adicionar novos itens
+
+            itens.forEach(item => {
+                const novaLinha = document.createElement('tr');
+                novaLinha.innerHTML = `
+                    <td>${item.codigo_produto}</td> <!-- Ajuste conforme seu modelo -->
+                    <td>${item.nome_produto}</td> <!-- Ajuste conforme seu modelo -->
+                    <td>${item.quantidade}</td>
+                    <td>${parseFloat(item.valor_unitario).toFixed(2)}</td>
+                `;
+                tabelaProdutos.appendChild(novaLinha);
+            });
+        } else {
+            alert('Erro ao buscar itens de venda.');
+        }
+    }
+
+    document.getElementById('total-recebido').addEventListener('input', calcularTroco);
+
+    function calcularTroco() {
+        const valorRecebido = parseFloat(document.getElementById('total-recebido').value.replace('R$', '').replace(',', '.'));
+
+        if (isNaN(valorRecebido) || valorRecebido < 0) {
             document.getElementById('troco').innerText = 'R$ 0,00';
-            document.getElementById('total-recebido').value = '';
-            itensVenda = [];
-            subtotal = 0;
+            return;
         }
 
-        // Função para buscar produto
-        async function buscarProduto(codigoOuNome) {
-            // Simulação de busca de produto (você deve substituir pela lógica real)
-            const produtosSimulados = [
-                { codigo: '123', descricao: 'Arroz', preco: 5.00 },
-                { codigo: '456', descricao: 'Feijão', preco: 7.50 },
-                { codigo: '771', descricao: 'Macarrão', preco: 4.25 },
-                { codigo: '772', descricao: 'Feijão', preco: 6.25 },
-                { codigo: '773', descricao: 'farinha', preco: 5.25 },
-                { codigo: '774', descricao: 'bolacha', preco: 1.25 },
-                { codigo: '775', descricao: 'pão', preco: 2.25 }
-            ];
+        const subtotal = parseFloat(document.getElementById('subtotal').innerText.replace('R$', '').replace(',', '.'));
 
-            return produtosSimulados.find(produto => produto.codigo === codigoOuNome || produto.descricao.toLowerCase() === codigoOuNome.toLowerCase());
-        }
+        const troco = valorRecebido - subtotal;
 
-        // Função para registrar a venda (simulação)
-        async function registrarVenda(itens) {
-            console.log("Venda registrada com os itens:", itens);
-            // Aqui você faria a requisição para seu backend para salvar a venda
+        document.getElementById('troco').innerText = `R$ ${troco.toFixed(2).replace('.', ',')}`;
+    }
+
+    document.getElementById('finalizaCompra').addEventListener('click', function() {
+        window.location.href = '/';
+    });
+
+    document.getElementById('cancelarCompra').addEventListener('click', function() {
+        const vendaId = this.getAttribute('data-venda-id');
+        cancelar_compra(vendaId);
+    });
+
+    async function cancelar_compra(vendaId) {
+        if (confirm('Você tem certeza que deseja cancelar a compra?')) {
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/venda/${vendaId}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken(),
+                        'Authorization': 'Bearer SEU_TOKEN_AQUI'
+                    }
+                });
+
+                if (response.ok) {
+                    alert('Compra cancelada com sucesso!');
+                    window.location.href = '/';
+                } else {
+                    const errorData = await response.json();
+                    alert(`Erro ao cancelar a compra: ${errorData.detail || 'Falha ao cancelar a compra.'}`);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao cancelar a compra.');
+            }
         }
+    }
+
     </script>
 </body>
 </html>
