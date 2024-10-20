@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Caixa - Supermercado</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #0a3d62;
+            color: white;
+        }
+
+        .header .logo h1 {
+            font-size: 1.5rem;
+        }
+
+        .header .status h2 {
+            font-size: 1.2rem;
+        }
+
+        .main-content {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .left, .center, .right {
+            flex: 1;
+        }
+
+        .left {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .left label, .right label {
+            font-weight: bold;
+        }
+
+        .left input, .right input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+        }
+
+        .lista-produtos {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .lista-produtos th, .lista-produtos td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        .right {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .right span {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background-color: #0a3d62;
+        }
+
+        .footer button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .footer button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h2>CAIXA ABERTO - Venda ID: {{ venda.id }}</h2>
+            </div>
+            <div class="status">
+                <h2>CAIXA ABERTO</h2>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="left">
+                <div class="codigo-barras">
+                    <label for="codigo">Código de Barras</label>
+                    <input type="text" id="codigoProduto" placeholder="Digite o código ou nome">
+                </div>
+                <div class="valor-unitario">
+                    <label for="valor">Valor Unitário</label>
+                    <input type="text" id="valor" value="R$ 0,00" disabled>
+                </div>
+                <div class="total-item">
+                    <label for="total-item">Total do Item</label>
+                    <input type="text" id="total-item" value="R$ 0,00" disabled>
+                </div>
+                <div class="quantidade">
+                    <label for="quantidade">Quantidade</label>
+                    <input type="number" id="quantidade" value="1">
+                </div>
+                <button onclick="iniciarVenda()">Buscar Produto</button>
+            </div>
+
+            <div class="center">
+                <table class="lista-produtos">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Descrição</th>
+                            <th>Quantidade</th>
+                            <th>Valor Unitário</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-produtos">
+                        <!-- Produtos serão listados aqui -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="right">
+                <div class="subtotal">
+                    <label>Subtotal</label>
+                    <span id="subtotal">R$ 0,00</span>
+                </div>
+                <div class="total-recebido">
+                    <label>Total Recebido</label>
+                    <input type="text" id="total-recebido" placeholder="R$ 0,00" oninput="calcularTroco()">
+                </div>
+                <div class="troco">
+                    <label>Troco</label>
+                    <span id="troco">R$ 0,00</span>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <button onclick="finalizarVenda()">Finalizar Venda</button>
+        </footer>
+    </div>
+
+    <script>
+        // Array que irá armazenar os itens da venda
+        let itensVenda = [];
+        let subtotal = 0;
+
+        // Função para adicionar produto à venda
+        async function iniciarVenda() {
+            const codigoOuNome = document.getElementById('codigoProduto').value;
+            const quantidade = document.getElementById('quantidade').value;
+
+            // Função de buscar produto (deve ser implementada no seu backend)
+            const produto = await buscarProduto(codigoOuNome);
+
+            if (produto) {
+                const valorUnitario = produto.preco;
+                const totalItem = valorUnitario * quantidade;
+
+                // Atualiza o subtotal
+                subtotal += totalItem;
+                document.getElementById('subtotal').innerText = `R$ ${subtotal.toFixed(2)}`;
+
+                // Adiciona item à tabela de produtos
+                const tabela = document.getElementById('tabela-produtos');
+                const novaLinha = tabela.insertRow();
+                novaLinha.innerHTML = `
+                    <td>${produto.codigo}</td>
+                    <td>${produto.descricao}</td>
+                    <td>${quantidade}</td>
+                    <td>R$ ${valorUnitario.toFixed(2)}</td>
+                    <td>R$ ${totalItem.toFixed(2)}</td>
+                `;
+
+                // Adiciona item ao array de venda
+                itensVenda.push({ produto, quantidade, totalItem });
+            } else {
+                alert("Produto não encontrado");
+            }
+        }
+
+        // Função para calcular o troco
+        function calcularTroco() {
+            const totalRecebido = parseFloat(document.getElementById('total-recebido').value);
+            const troco = totalRecebido - subtotal;
+            document.getElementById('troco').innerText = `R$ ${troco.toFixed(2)}`;
+        }
+
+        // Função para finalizar a venda
+        async function finalizarVenda() {
+            if (itensVenda.length === 0) {
+                alert("Nenhum produto adicionado à venda.");
+                return;
+            }
+
+            // Registrar venda (deve ser implementado no seu backend)
+            await registrarVenda(itensVenda);
+
+            alert("Venda finalizada com sucesso!");
+            // Limpa a tela e os dados após finalizar a venda
+            document.getElementById('tabela-produtos').innerHTML = '';
+            document.getElementById('subtotal').innerText = 'R$ 0,00';
+            document.getElementById('troco').innerText = 'R$ 0,00';
+            document.getElementById('total-recebido').value = '';
+            itensVenda = [];
+            subtotal = 0;
+        }
+
+        // Função para buscar produto
+        async function buscarProduto(codigoOuNome) {
+            // Simulação de busca de produto (você deve substituir pela lógica real)
+            const produtosSimulados = [
+                { codigo: '123', descricao: 'Arroz', preco: 5.00 },
+                { codigo: '456', descricao: 'Feijão', preco: 7.50 },
+                { codigo: '771', descricao: 'Macarrão', preco: 4.25 },
+                { codigo: '772', descricao: 'Feijão', preco: 6.25 },
+                { codigo: '773', descricao: 'farinha', preco: 5.25 },
+                { codigo: '774', descricao: 'bolacha', preco: 1.25 },
+                { codigo: '775', descricao: 'pão', preco: 2.25 }
+            ];
+
+            return produtosSimulados.find(produto => produto.codigo === codigoOuNome || produto.descricao.toLowerCase() === codigoOuNome.toLowerCase());
+        }
+
+        // Função para registrar a venda (simulação)
+        async function registrarVenda(itens) {
+            console.log("Venda registrada com os itens:", itens);
+            // Aqui você faria a requisição para seu backend para salvar a venda
+        }
+    </script>
+</body>
+</html>

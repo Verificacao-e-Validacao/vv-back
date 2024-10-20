@@ -1,1 +1,37 @@
-<h1>Home Page</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script>
+        function novaVenda() {
+            fetch('http://127.0.0.1:8000/api/venda/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.id) {
+                    // Redireciona para a página /caixa/ com o ID da venda
+                    window.location.href = `http://127.0.0.1:8000/caixa/?venda=${data.id}`;
+                } else {
+                    console.error('Erro ao criar nova venda.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro na requisição:', error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Bem-vindo à Página Inicial</h1>
+    
+    <button onclick="novaVenda()">Nova Venda</button>
+</body>
+</html>
