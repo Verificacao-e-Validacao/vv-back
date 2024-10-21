@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-4o9w#9qzuw_49ver6o^#^b!yp*y)(ye(1!$l4(^&py!y=#eqjj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['teste.mercado-facil.ufersa.dev.br','54.163.12.195']
 CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
@@ -112,6 +112,23 @@ DATABASES = {
     }
 }
 
+USE_POSTGRES = config("USE_POSTGRES", default=False, cast=bool)
+
+
+if USE_POSTGRES:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': config("DATABASE_POSTGRES"),
+            'USER': config("USER_POSTGRES"),
+            'PASSWORD': config("PASSWORD_POSTGRES"),
+            'HOST': config("HOST_POSTGRES"),
+            'PORT': config("PORT_POSTGRES"),
+        }
+    }
+else:
+    default_dburl = "sqlite:///" + os.path.join(BASE_DIR, "db.sqlite3")
+    DATABASES = {"default": config("DATABASE_URL", default=default_dburl, cast=dburl)}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
