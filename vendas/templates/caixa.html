@@ -54,18 +54,12 @@
             min-width: 250px; /* Tamanho mínimo para colunas */
         }
         
-        .left {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .left label, .right label {
+        .left label, .right label, .quantidade label    {
             font-weight: bold;
         }
         
-        .left input, .right input {
-            width: 100%;
+        .left input, .right input, .quantidade input{
+            flex: 1;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -195,12 +189,12 @@
 
         <div class="main-content">
             <div class="left">
-                <div class="codigo-barras">
+                <div class="codigo-barras" style="display: flex; flex-direction: column;">
                     <label for="codigo">Código de Barras</label>
                     <input type="text" id="codigoProduto" placeholder="Digite o código ou nome">
                 </div>
                 </div>
-                <div class="quantidade">
+                <div class="quantidade" style="display: flex; flex-direction: column;">
                     <label for="quantidade">Quantidade</label>
                     <input type="number" id="quantidade" value="1">
                 </div>

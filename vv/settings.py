@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-4o9w#9qzuw_49ver6o^#^b!yp*y)(ye(1!$l4(^&py!y=#eqjj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['mercado-facil.ufersa.dev.br','54.86.109.162']
+ALLOWED_HOSTS = ['mercado-facil.ufersa.dev.br','54.86.109.162', '127.0.0.1']
 CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
@@ -120,8 +120,12 @@ if USE_POSTGRES:
         }
     }
 else:
-    default_dburl = "sqlite:///" + os.path.join(BASE_DIR, "db.sqlite3")
-    DATABASES = {"default": config("DATABASE_URL", default=default_dburl, cast=dburl)}
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
