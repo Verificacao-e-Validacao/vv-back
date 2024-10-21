@@ -1,6 +1,8 @@
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
 from .models import ItemVenda
+from produtos.models import Estoque
+from datetime import date
 
 @receiver(pre_save, sender=ItemVenda)
 def verificar_estoque_antes_venda(sender, instance, **kwargs):
@@ -44,3 +46,16 @@ def define_valor_total_post_save(sender, instance, **kwargs):
 @receiver(post_delete, sender=ItemVenda)
 def define_valor_total_post_delete(sender, instance, **kwargs):
     handle_venda_changes(instance, **kwargs)
+    produto = instance.produto
+    estoque = produto.movimentacoes_estoque.all().first()
+    if estoque:
+        estoque.quantidade += instance.quantidade
+        estoque.save()
+    else:
+        estoque = Estoque.objects.create(
+            produto=produto,
+            peso=1,
+            valor_compra=1,
+            quantidade=instance.quantidade, 
+            vencimento=date.today()
+        )
