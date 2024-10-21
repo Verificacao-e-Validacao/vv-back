@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-4o9w#9qzuw_49ver6o^#^b!yp*y)(ye(1!$l4(^&py!y=#eqjj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['mercado-facil.ufersa.dev.br','54.163.12.195']
+ALLOWED_HOSTS = ['mercado-facil.ufersa.dev.br','54.86.109.162']
 CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
