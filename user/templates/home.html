@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script>
         function novaVenda() {
             const baseUrl = window.location.origin;
@@ -18,7 +19,6 @@
             .then(response => response.json())
             .then(data => {
                 if (data.id) {
-                    // Redireciona para a página /caixa/ com o ID da venda
                     window.location.href = `${baseUrl}/caixa/?venda=${data.id}`;
                 } else {
                     console.error('Erro ao criar nova venda.');
@@ -31,21 +31,50 @@
     </script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
+            height: 100vh;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f2f2f2;
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            position: relative;
         }
-        .container{
-            display:column;
+
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            font-size: 14px;
+            border: 2px solid #e74c3c;
+            background-color: transparent;
+            color: #e74c3c;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .logout-button:hover {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
         }
 
         h1 {
-            text-align: center;
             color: #333;
+            margin-bottom: 20px;
+            font-weight: 700;
         }
 
         button {
@@ -57,7 +86,7 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease, color 0.3s ease;
-            gap:15px;
+            margin: 10px;
         }
 
         button:hover {
@@ -65,12 +94,12 @@
             color: #fff;
         }
     </style>
-
 </head>
-<body> 
+<body>
+    <a href="http://127.0.0.1:8000/admin/logout/" class="logout-button">Sair</a>
+
     <div class="container">
-    <h1>Bem-vindo à Página Inicial</h1>
-   
+        <h1>Bem-vindo à Página Inicial</h1>
         <button onclick="novaVenda()">Nova Venda</button>
         <button onclick="novaVenda()">Cadastrar venda</button>
     </div>
