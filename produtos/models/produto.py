@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Sum
+from django.core.validators import MinValueValidator
 
 class Produto(models.Model):
     """
@@ -24,6 +25,7 @@ class Produto(models.Model):
 
     valor_venda = models.DecimalField(
         max_digits=10, decimal_places=2,
+        validators=[MinValueValidator(0)],
         help_text="Valor de venda do produto"
     )
 
