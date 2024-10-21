@@ -11,21 +11,20 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
-
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-4o9w#9qzuw_49ver6o^#^b!yp*y)(ye(1!$l4(^&py!y=#eqjj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['mercado-facil.ufersa.dev.br','54.86.109.162']
 CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
@@ -105,13 +104,24 @@ WSGI_APPLICATION = 'vv.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
+USE_POSTGRES = config("USE_POSTGRES", default=False, cast=bool)
+
+
+if USE_POSTGRES:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': config("DATABASE_POSTGRES"),
+            'USER': config("USER_POSTGRES"),
+            'PASSWORD': config("PASSWORD_POSTGRES"),
+            'HOST': config("HOST_POSTGRES"),
+            'PORT': config("PORT_POSTGRES"),
+        }
+    }
+else:
+    default_dburl = "sqlite:///" + os.path.join(BASE_DIR, "db.sqlite3")
+    DATABASES = {"default": config("DATABASE_URL", default=default_dburl, cast=dburl)}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -151,13 +161,11 @@ LOGOUT_REDIRECT_URL = '/login/'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
-
 STATIC_URL = '/static/'
-
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = ('/var/www/html/static')
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
