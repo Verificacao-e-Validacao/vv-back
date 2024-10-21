@@ -28,10 +28,50 @@
             });
         }
     </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f2f2f2;
+        }
+        .container{
+            display:column;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: 2px solid #0a3d62;
+            background-color: transparent;
+            color: #3498db;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            gap:15px;
+        }
+
+        button:hover {
+            background-color: #0a3d62;
+            color: #fff;
+        }
+    </style>
+
 </head>
-<body>
+<body> 
+    <div class="container">
     <h1>Bem-vindo à Página Inicial</h1>
-    
-    <button onclick="novaVenda()">Nova Venda</button>
+   
+        <button onclick="novaVenda()">Nova Venda</button>
+        <button onclick="novaVenda()">Cadastrar vendar</button>
+    </div>
 </body>
 </html>
