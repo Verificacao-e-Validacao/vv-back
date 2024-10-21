@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nota Fiscal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            width: 80mm;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        .nota-fiscal {
+            width: 100%;
+            border: 1px dashed #000;
+            padding: 10px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin: 5px 0;
+        }
+
+        .info-venda {
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .info-venda p {
+            margin: 3px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        table th, table td {
+            padding: 5px;
+            text-align: left;
+            border-bottom: 1px dashed #000;
+        }
+
+        .total-venda {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="nota-fiscal">
+        <h1>Recibo de Compra</h1>
+        <h2>Venda #{{ venda.id }}</h2>
+
+        <!-- Informações da venda -->
+        <div class="info-venda">
+            <p><strong>Data:</strong> {{ venda.data|date:"d/m/Y H:i" }}</p>
+            <p><strong>Cliente:</strong> {{ venda.cliente.nome }}</p>
+        </div>
+
+        <!-- Tabela de itens -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Qtd</th>
+                    <th>Preço</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in itens %}
+                <tr>
+                    <td>{{ item.produto.nome }}</td>
+                    <td>{{ item.quantidade }}</td>
+                    <td>R$ {{ item.preco|floatformat:2 }}</td>
+                    <td>R$ {{ item.total|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Total da venda -->
+        <div class="total-venda">
+            Total: R$ {{ venda.valor_total|floatformat:2 }}
+        </div>
+
+        <!-- Rodapé -->
+        <div class="footer">
+            <p>Obrigado por sua compra!</p>
+            <p>Empresa Mercado Facil Ltda - CNPJ: 00.000.000/0001-00</p>
+        </div>
+    </div>
+</body>
+</html>

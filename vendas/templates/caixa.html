@@ -234,7 +234,7 @@
         </div>
 
         <footer class="footer">
-            <button id="finalizaCompra">Finaliza Compra</button>
+            <button id="finalizaCompra" data-venda-id="{{ venda.id }}">Finaliza Compra</button>
             <button id="cancelarCompra" data-venda-id="{{ venda.id }}">Cancelar Compra</button>
         </footer>
     </div>
@@ -342,8 +342,14 @@
     }
 
     document.getElementById('finalizaCompra').addEventListener('click', function() {
-        window.location.href = '/';
+        const vendaId = this.getAttribute('data-venda-id');
+        gerarNotaFiscal(vendaId);
     });
+
+    function gerarNotaFiscal(vendaId) {
+        const baseUrl = window.location.origin;
+        window.location.href = `${baseUrl}/gerar-nota-fiscal/${vendaId}/`;
+    }
 
     document.getElementById('cancelarCompra').addEventListener('click', function() {
         const vendaId = this.getAttribute('data-venda-id');
