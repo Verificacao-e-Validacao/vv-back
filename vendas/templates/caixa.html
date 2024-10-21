@@ -262,7 +262,8 @@
             }
 
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/venda/${vendaId}/adicionar_produto/`, {
+                const baseUrl = window.location.origin;
+                const response = await fetch(`${baseUrl}/api/venda/${vendaId}/adicionar_produto/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -301,7 +302,8 @@
     });
 
     async function atualiza_tabela_produtos(vendaId) {
-        const response = await fetch(`http://127.0.0.1:8000/api/item-venda/?venda=${vendaId}`);
+        const baseUrl = window.location.origin;
+        const response = await fetch(`${baseUrl}/api/item-venda/?venda=${vendaId}`);
         if (response.ok) {
             const itens = await response.json();
             const tabelaProdutos = document.getElementById('tabela-produtos');
@@ -351,7 +353,8 @@
     async function cancelar_compra(vendaId) {
         if (confirm('Você tem certeza que deseja cancelar a compra?')) {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/venda/${vendaId}/`, {
+                const baseUrl = window.location.origin;
+                const response = await fetch(`${baseUrl}/api/venda/${vendaId}/`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',

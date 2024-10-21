@@ -6,7 +6,8 @@
     <title>Home</title>
     <script>
         function novaVenda() {
-            fetch('http://127.0.0.1:8000/api/venda/', {
+            const baseUrl = window.location.origin;
+            fetch(`${baseUrl}/api/venda/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -18,7 +19,7 @@
             .then(data => {
                 if (data.id) {
                     // Redireciona para a página /caixa/ com o ID da venda
-                    window.location.href = `http://127.0.0.1:8000/caixa/?venda=${data.id}`;
+                    window.location.href = `${baseUrl}/caixa/?venda=${data.id}`;
                 } else {
                     console.error('Erro ao criar nova venda.');
                 }
@@ -71,7 +72,7 @@
     <h1>Bem-vindo à Página Inicial</h1>
    
         <button onclick="novaVenda()">Nova Venda</button>
-        <button onclick="novaVenda()">Cadastrar vendar</button>
+        <button onclick="novaVenda()">Cadastrar venda</button>
     </div>
 </body>
 </html>
