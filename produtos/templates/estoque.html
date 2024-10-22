@@ -116,39 +116,14 @@
         <div class="container">
             <header class="header">
                 <div class="logo">
-                    <h1>Cadastro de Produtos</h1>
+                    <h1>Estoque</h1>
                 </div>
             </header>
             <div id="mensagem" style="display:none; text-align:center; margin:10px 0; padding:10px; border-radius:5px;"></div>
 
             <div class="main-content">
-                <form id="formCadastroProduto" onsubmit="event.preventDefault(); cadastrarProduto();">
-                    <div class="form-group">
-                        <label for="nome">Nome:</label>
-                        <input type="text" id="nome" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="codigo">Código:</label>
-                        <input type="text" id="codigo" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="descricao">Descrição:</label>
-                        <input type="text" id="descricao" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="valor_venda">Valor de Venda:</label>
-                        <input type="number" id="valor_venda" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="detalhes">Detalhes:</label>
-                        <input type="text" id="detalhes" required>
-                    </div>
-
-                    <!-- 
+                <form id="formCadastroProduto" onsubmit="event.preventDefault(); cadastrarEstoque({{produto.id}});">
+                    
                     <div class="form-group">
                         <label for="peso">Peso:</label>
                         <input type="number" id="peso">
@@ -168,9 +143,8 @@
                         <label for="vencimento">Vencimento:</label>
                         <input type="date" id="vencimento">
                     </div>
--->
                     <div class="footer">
-                        <button type="submit">Cadastrar Produto</button>
+                        <button type="submit">Cadastrar Estoque</button>
                     </div>
                 </form>
             </div>
@@ -191,67 +165,42 @@
             }
         }
         
-        async function cadastrarProduto() {
-            const baseUrl = window.location.origin;
-            const url = `${baseUrl}/api/produtos/`;
         
+        async function cadastrarEstoque(produtoId) {
+            const baseUrl = window.location.origin;
+            const url = `${baseUrl}/api/estoque/`;
+        
+            const estoque = {
+                peso: document.getElementById('peso').value,
+                valor_compra: document.getElementById('valor_compra').value,
+                quantidade: document.getElementById('quantidade').value,
+                vencimento: document.getElementById('vencimento').value,
+                produto: produtoId
+            };            
+
             try {
-
-                const produto = {
-                    nome: document.getElementById('nome').value,
-                    codigo: document.getElementById('codigo').value,
-                    descricao: document.getElementById('descricao').value,
-                    valor_venda: document.getElementById('valor_venda').value,
-                    detalhes: document.getElementById('detalhes').value,
-                };
-
-                const getProdutoUrl = `${url}?codigo=${produto.codigo}`;
-                const getResponse = await fetch(getProdutoUrl, {
-                    method: 'GET',
+                const response = await fetch(url, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': '{{ csrf_token }}',
-                    }
+                    },
+                    body: JSON.stringify(estoque)
                 });
-
-                if (getResponse.ok) {
-                    const produtos = await getResponse.json();
-                    if (produtos.length > 0) {
-                        const produtoExistente = produtos[0];
-                        console.log('Produto já existente:', produtoExistente);
-                        alert('Produto já existente, será redirecionado para o estoque.')
-                        window.open('/estoque/'+ produtoExistente.id, '_self');
-                        //cadastrarEstoque(produtoExistente.id);
-                        //alert('Estoque atualizado.');
-                        return;
-                    }
-                }
-
-                const response = await fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}',
-                        },
-                        body: JSON.stringify(produto)
-                    });
 
                 if (response.ok) {
                     const data = await response.json();
-                    // console.log(data);
-                    
-                    window.open('/estoque/'+ data.id, '_self');
+                    alert('Estoque Atualizado')
+                    window.open("/", "_self");
                 } else {
                     const errorData = await response.json();
-                    alert(`Erro: ${errorData.detail || 'Falha ao adicionar o produto.'}`);
+                    alert(`Erro: ${errorData.detail || 'Falha ao adicionar o estoque.'}`);
                 }
-            
-            }  catch (error) {
+            } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao adicionar o produto.');
+                alert('Erro ao adicionar o Estoque.');
             }
-        }
-        
+        }   
              
     </script>
 </body>
