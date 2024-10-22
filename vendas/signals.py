@@ -11,22 +11,28 @@ def verificar_estoque_antes_venda(sender, instance, **kwargs):
     estoque_produto = produto.movimentacoes_estoque.all()
     quantidade_venda = instance.quantidade
 
-    for estoque in estoque_produto:
-        if estoque.quantidade > quantidade_venda:
-            estoque.quantidade -= quantidade_venda
-            quantidade_venda = 0
-            estoque.save()
-            break
-        elif estoque.quantidade == quantidade_venda:
-            estoque.delete()
-            quantidade_venda = 0
-            break
-        else:
-            quantidade_venda -= estoque.quantidade
-            estoque.delete()
+    total_quantidade = sum(item.quantidade for item in estoque_produto)
+    if total_quantidade < quantidade_venda:
+        print(f"existem: {total_quantidade} | pedido: {quantidade_venda}")
+        raise ValueError(f"Estoque insuficiente")
 
-    if quantidade_venda:
-        raise ValueError(f"Estoque insuficiente para {produto.nome}. Disponível: {quantidade_estoque}, Solicitado: {instance.quantidade}")
+    else:    
+        for estoque in estoque_produto:
+            if estoque.quantidade > quantidade_venda:
+                estoque.quantidade -= quantidade_venda
+                quantidade_venda = 0
+                estoque.save()
+                break
+            elif estoque.quantidade == quantidade_venda:
+                estoque.delete()
+                quantidade_venda = 0
+                break
+            else:
+                quantidade_venda -= estoque.quantidade
+                estoque.delete()
+
+        if quantidade_venda:
+            raise ValueError(f"Estoque insuficiente para {produto.nome}. Disponível: {quantidade_estoque}, Solicitado: {instance.quantidade}")
 
 
 def handle_venda_changes(instance, **kwargs):
