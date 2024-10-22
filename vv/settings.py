@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     #Libs
     'rest_framework',
     'django_filters',
+    'admin_reorder',
     #Apps
     'produtos',
     'user',
@@ -59,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'admin_reorder.middleware.ModelAdminReorder',
 ]
 
 MIDDLEWARE += ('crum.CurrentRequestUserMiddleware',)
@@ -169,3 +171,8 @@ STATIC_ROOT = ('/var/www/html/static')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+ADMIN_REORDER = (
+    'produtos',
+    'user',
+    'vendas',
+)
