@@ -198,7 +198,7 @@
                     <label for="quantidade">Quantidade</label>
                     <input type="number" id="quantidade" value="1">
                 </div>
-                <button id="adicionarProduto" data-venda-id="{{ venda.id }}">Adicionar Produto</button>
+                <button id="adicionarProduto" data-venda-id="{{ venda.id }}" type="submit">Adicionar Produto</button>
             </div>
 
             <div class="center">
@@ -286,6 +286,8 @@
                     }
                     console.log(data);
                     await atualiza_tabela_produtos(vendaId);
+
+                    document.getElementById('codigoProduto').value = '';
                 } else {
                     const errorData = await response.json();
                     alert(`Erro: ${errorData.detail || 'Falha ao adicionar o produto.'}`);
