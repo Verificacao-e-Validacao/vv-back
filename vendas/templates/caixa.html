@@ -234,7 +234,7 @@
         </div>
 
         <footer class="footer">
-            <button id="finalizaCompra">Finaliza Compra</button>
+            <button id="finalizaCompra" data-venda-id="{{ venda.id }}">Finaliza Compra</button>
             <button id="cancelarCompra" data-venda-id="{{ venda.id }}">Cancelar Compra</button>
         </footer>
     </div>
@@ -343,6 +343,23 @@
         document.getElementById('troco').innerText = `R$ ${troco.toFixed(2).replace('.', ',')}`;
     }
 
+    function obterItensVenda(vendaId) {
+        return fetch(`/api/item-venda/?venda=${vendaId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar itens da venda');
+                }
+                return response.json();
+            })
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                return [];
+            });
+    }
+
     document.getElementById('finalizaCompra').addEventListener('click', function() {
         const valorRecebido = parseFloat(document.getElementById('total-recebido').value.replace('R$', '').replace(',', '.'));
         const subtotal = parseFloat(document.getElementById('subtotal').innerText.replace('R$', '').replace(',', '.'));
@@ -355,6 +372,11 @@
     
         window.location.href = '/';
     });
+
+    function gerarNotaFiscal(vendaId) {
+        const baseUrl = window.location.origin;
+        window.location.href = `${baseUrl}/gerar-nota-fiscal/${vendaId}/`;
+    }
 
     document.getElementById('cancelarCompra').addEventListener('click', function() {
         const vendaId = this.getAttribute('data-venda-id');

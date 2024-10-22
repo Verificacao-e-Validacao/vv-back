@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script>
         function novaVenda() {
             const baseUrl = window.location.origin;
@@ -18,7 +19,6 @@
             .then(response => response.json())
             .then(data => {
                 if (data.id) {
-                    // Redireciona para a página /caixa/ com o ID da venda
                     window.location.href = `${baseUrl}/caixa/?venda=${data.id}`;
                 } else {
                     console.error('Erro ao criar nova venda.');
@@ -28,24 +28,129 @@
                 console.error('Erro na requisição:', error);
             });
         }
+
+        function logout() {
+            window.location.href = "/admin/logout/";
+        }
+
+        function irParaAdmin() {
+            window.location.href = "/admin/"; // Ajuste conforme sua rota de admin
+        }
+
+        function toggleDropdown() {
+            const dropdownContent = document.querySelector('.dropdown-content');
+            dropdownContent.classList.toggle('show');
+        }
+
+        // Fecha o dropdown se o usuário clicar fora dele
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown-button')) {
+                const dropdowns = document.getElementsByClassName("dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
     </script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
+            height: 100vh;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f2f2f2;
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            position: relative;
         }
-        .container{
-            display:column;
+
+        /* Estilos do Dropdown */
+        .dropdown {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            z-index: 1000; /* Para garantir que o dropdown fique acima de outros elementos */
+        }
+
+        .dropdown-button {
+            padding: 10px 20px;
+            font-size: 14px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .dropdown-button:hover {
+            background-color: #2980b9;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 5px;
+            margin-top: 5px;
+            overflow: hidden; /* Para evitar que o conteúdo transborde */
+            animation: fadeIn 0.2s; /* Efeito de aparecimento */
+        }
+
+        .dropdown-content button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: none;
+            text-align: left;
+            color: #3498db;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-content button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        /* Efeito de fade-in */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            margin: 20px; /* Adiciona margem em telas pequenas */
         }
 
         h1 {
-            text-align: center;
             color: #333;
+            margin-bottom: 20px;
+            font-weight: 700;
         }
 
         button {
@@ -57,20 +162,40 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease, color 0.3s ease;
-            gap:15px;
+            margin: 10px;
         }
 
         button:hover {
             background-color: #0a3d62;
             color: #fff;
         }
-    </style>
 
+        /* Responsividade */
+        @media (max-width: 600px) {
+            .dropdown-button {
+                width: 100%;
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 20px;
+                margin: 10px; /* Adiciona margem para telas pequenas */
+            }
+        }
+    </style>
 </head>
-<body> 
+<body>
+    <!-- Dropdown com setinha -->
+    <div class="dropdown">
+        <button class="dropdown-button" onclick="toggleDropdown()">▼ Menu</button>
+        <div class="dropdown-content">
+            <button onclick="logout()">Sair</button>
+            <button onclick="irParaAdmin()">Ir para Admin</button>
+        </div>
+    </div>
+
     <div class="container">
-    <h1>Bem-vindo à Página Inicial</h1>
-   
+        <h1>Bem-vindo à Página Inicial</h1>
         <button onclick="novaVenda()">Nova Venda</button>
         <button onclick="novaVenda()">Cadastrar venda</button>
     </div>
