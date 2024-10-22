@@ -8,11 +8,9 @@ from django.contrib.auth.models import User
 class ProdutoViewSetTest(APITestCase):
 
     def setUp(self):
-        # Criar um usuário autenticado
         self.user = User.objects.create_user(username='testuser', password='12345')
         self.client.login(username='testuser', password='12345')
 
-        # Criar um produto para testar as operações de CRUD
         self.produto = Produto.objects.create(
             nome="Produto Teste",
             codigo=123,
@@ -20,13 +18,13 @@ class ProdutoViewSetTest(APITestCase):
             valor_venda=100.00
         )
 
-        self.url_list = '/api/produtos/'  # Rota para listar e criar produtos
+        self.url_list = '/api/produtos/'
 
     def test_list_produtos(self):
         """Testa se a listagem de produtos está funcionando"""
         response = self.client.get(self.url_list)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)  # Deve haver 1 produto criado
+        self.assertEqual(len(response.data), 1)
 
     def test_create_produto(self):
         """Testa se um novo produto pode ser criado"""
@@ -38,11 +36,11 @@ class ProdutoViewSetTest(APITestCase):
         }
         response = self.client.post(self.url_list, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Produto.objects.count(), 2)  # Deve haver 2 produtos no banco de dados
+        self.assertEqual(Produto.objects.count(), 2)
 
     def test_update_produto(self):
         """Testa se um produto pode ser atualizado"""
-        url_detail = f'/api/produtos/{self.produto.pk}/'  # URL de detalhe do produto
+        url_detail = f'/api/produtos/{self.produto.pk}/'
         data = {
             "nome": "Produto Atualizado",
             "codigo": 789,
@@ -56,7 +54,7 @@ class ProdutoViewSetTest(APITestCase):
 
     def test_delete_produto(self):
         """Testa se um produto pode ser deletado"""
-        url_detail = f'/api/produtos/{self.produto.pk}/'  # URL de detalhe do produto
+        url_detail = f'/api/produtos/{self.produto.pk}/'
         response = self.client.delete(url_detail)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Produto.objects.count(), 0)
@@ -65,4 +63,4 @@ class ProdutoViewSetTest(APITestCase):
         """Testa se a busca de produto está funcionando"""
         response = self.client.get(self.url_list, {'search': 'Produto Teste'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)  # Deve retornar 1 produto
+        self.assertEqual(len(response.data), 1)

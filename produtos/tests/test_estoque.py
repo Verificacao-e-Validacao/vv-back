@@ -8,11 +8,9 @@ from datetime import date
 class EstoqueViewSetTest(APITestCase):
     
     def setUp(self):
-        # Criar um usuário autenticado
         self.user = User.objects.create_user(username='testuser', password='12345')
         self.client.login(username='testuser', password='12345')
 
-        # Criar um produto de teste
         self.produto = Produto.objects.create(
             nome="Produto Teste",
             codigo=123,
@@ -20,7 +18,6 @@ class EstoqueViewSetTest(APITestCase):
             valor_venda=100.00
         )
 
-        # Criar uma movimentação de estoque para testes
         self.estoque = Estoque.objects.create(
             produto=self.produto,
             peso=10.50,

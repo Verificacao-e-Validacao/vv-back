@@ -9,30 +9,24 @@ import datetime
 class VendaViewSetTest(APITestCase):
 
     def setUp(self):
-        # Criar um usuário autenticado para ser o vendedor
         self.user = User.objects.create_user(username='vendedor', password='12345')
         self.client.login(username='vendedor', password='12345')
 
-        # Criar a ContentType do vendedor
         self.vendedor_content_type = ContentType.objects.get_for_model(self.user)
 
-        # Criar um produto de teste
         self.produto = Produto.objects.create(
             nome="Produto Teste", codigo=123, valor_venda=100.00
         )
-        # Criar estoque de produto para teste
         self.estoque = Estoque.objects.create(
             produto=self.produto,peso=1,valor_compra=10,quantidade=100,vencimento=datetime.datetime.now()
         )
 
-        # Criar uma venda de teste
         self.venda = Venda.objects.create(
             vendedor_content_type=self.vendedor_content_type,
             vendedor_object_id=self.user.id,
             valor_total=0
         )
 
-        # URL para a listagem de vendas e itens
         self.url_list = '/api/venda/'
         self.url_list_itens_venda = '/api/item-venda/'
     
@@ -77,7 +71,6 @@ class VendaViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ItemVenda.objects.count(), 1)
 
-        # Recalcular o valor total da venda
         self.venda.refresh_from_db()
         self.assertEqual(self.venda.valor_total, 200.00)
     
@@ -87,7 +80,7 @@ class VendaViewSetTest(APITestCase):
             "venda": self.venda.pk,
             "produto": self.produto.pk,
             "quantidade": 2,
-            "valor_unitario": "-50.00"  # Valor inválido
+            "valor_unitario": "-50.00"
         }
         response = self.client.post(self.url_list_itens_venda, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -107,13 +100,12 @@ class VendaViewSetTest(APITestCase):
         data = {
             "venda": self.venda.pk,
             "produto": self.produto.pk,
-            "quantidade": 3,  # Alterando a quantidade
+            "quantidade": 3,
             "valor_unitario": "100.00"
         }
         response = self.client.put(url_detail_item_venda, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # Verificar se o valor total foi atualizado
         self.venda.refresh_from_db()
         self.assertEqual(self.venda.valor_total, 300.00)
     
@@ -126,19 +118,15 @@ class VendaViewSetTest(APITestCase):
         data = {
             "venda": self.venda.pk,
             "produto": self.produto.pk,
-            "quantidade": 2,  # Comprando 2 unidades
-            "valor_unitario": "100.00"  # Valor unitário do produto
+            "quantidade": 2,
+            "valor_unitario": "100.00"
         }
 
-        # Faz a requisição para criar o item de venda
         response = self.client.post(self.url_list_itens_venda, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # Atualiza o objeto venda para refletir as mudanças no banco de dados
         self.venda.refresh_from_db()
 
-        # Verifica se o valor total da venda foi atualizado corretamente
-        # Valor esperado: 2 unidades * 100.00 (valor_unitário) = 200.00
         self.assertEqual(self.venda.valor_total, 200.00)
     
     def test_delete_item_venda(self):
@@ -151,11 +139,9 @@ class VendaViewSetTest(APITestCase):
         )
         url_detail_item_venda = f'/api/item-venda/{item_venda.pk}/'
 
-        # Deletar o item de venda
         response = self.client.delete(url_detail_item_venda)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-        # Verificar se o valor total foi atualizado após a remoção do item
         self.venda.refresh_from_db()
         self.assertEqual(self.venda.valor_total, 0.00)
 
