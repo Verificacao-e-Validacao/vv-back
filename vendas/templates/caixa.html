@@ -300,6 +300,7 @@
                 } else {
                     const errorData = await response.json();
                     alert(`Erro: ${errorData.detail || 'Falha ao adicionar o produto.'}`);
+                    window.open('/', '_self');
                 }
             } catch (error) {
                 console.error('Erro:', error);
