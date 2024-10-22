@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-4o9w#9qzuw_49ver6o^#^b!yp*y)(ye(1!$l4(^&py!y=#eqjj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['mercado-facil.ufersa.dev.br','54.86.109.162', '127.0.0.1','localhost']
 CORS_ALLOW_ALL_ORIGINS = True
