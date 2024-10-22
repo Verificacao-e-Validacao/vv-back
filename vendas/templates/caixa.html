@@ -198,7 +198,7 @@
                     <label for="quantidade">Quantidade</label>
                     <input type="number" id="quantidade" value="1">
                 </div>
-                <button id="adicionarProduto" data-venda-id="{{ venda.id }}">Adicionar Produto</button>
+                <button id="adicionarProduto" data-venda-id="{{ venda.id }}" type="submit">Adicionar Produto</button>
             </div>
 
             <div class="center">
@@ -286,6 +286,8 @@
                     }
                     console.log(data);
                     await atualiza_tabela_produtos(vendaId);
+
+                    document.getElementById('codigoProduto').value = '';
                 } else {
                     const errorData = await response.json();
                     alert(`Erro: ${errorData.detail || 'Falha ao adicionar o produto.'}`);
@@ -359,16 +361,16 @@
     }
 
     document.getElementById('finalizaCompra').addEventListener('click', function() {
-        const vendaId = this.getAttribute('data-venda-id');
-        obterItensVenda(vendaId).then(itensVenda => {
-            console.log(itensVenda);
-
-            if (itensVenda.length > 0) {
-                gerarNotaFiscal(vendaId);
-            } else {
-                alert('Não há itens de venda cadastrados.');
-            }
-        });
+        const valorRecebido = parseFloat(document.getElementById('total-recebido').value.replace('R$', '').replace(',', '.'));
+        const subtotal = parseFloat(document.getElementById('subtotal').innerText.replace('R$', '').replace(',', '.'));
+    
+        // Se o valor recebido for menor que o subtotal, não pode fechar a compra
+        if (valorRecebido < subtotal) {
+            alert('O valor recebido não pode ser menor que o subtotal da compra!');
+            return;
+        }
+    
+        window.location.href = '/';
     });
 
     function gerarNotaFiscal(vendaId) {
