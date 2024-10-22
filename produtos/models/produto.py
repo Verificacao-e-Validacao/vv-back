@@ -13,8 +13,9 @@ class Produto(models.Model):
         max_length=100,
     )
 
-    codigo = models.IntegerField(
+    codigo = models.CharField(
         verbose_name="Código",
+        max_length=14,
     )
 
     descricao = models.TextField(

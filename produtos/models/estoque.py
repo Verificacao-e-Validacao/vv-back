@@ -23,6 +23,8 @@ class Estoque(models.Model):
         max_digits=10,
         decimal_places=2,
         help_text="Peso do produto em quilogramas",
+        blank=True,
+        null=True,
     )
 
     valor_compra = models.DecimalField(
@@ -35,7 +37,9 @@ class Estoque(models.Model):
     )
 
     vencimento = models.DateField(
-        help_text="Data de vencimento do produto"
+        help_text="Data de vencimento do produto",
+        blank=True,
+        null=True,
     )
 
     def clean(self):
