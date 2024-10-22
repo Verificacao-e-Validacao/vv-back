@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.auth.models import User
 
+from crum import get_current_user
 class Venda(models.Model):
 
     vendedor_content_type = models.ForeignKey(
@@ -26,6 +28,14 @@ class Venda(models.Model):
     data_venda = models.DateTimeField(
         auto_now_add=True
     )
+
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+
+        self.vendedor_content_type = ContentType.objects.get_for_model(user)
+        self.vendedor_object_id = user.id
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         '''Método que retorna a representação do objeto como string.'''
