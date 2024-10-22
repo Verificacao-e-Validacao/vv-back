@@ -125,6 +125,13 @@
         .footer #cancelarCompra:hover {
             background-color: #af1111;
         }
+
+        .lista-produtos-container {
+            max-height: 200px; 
+            height:199px;
+            overflow-y: scroll; 
+            width: 100%;
+        }
         
         /* Responsividade */
         @media (max-width: 768px) {
@@ -202,19 +209,21 @@
             </div>
 
             <div class="center">
-                <table class="lista-produtos">
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Nome</th>
-                            <th>Quantidade</th>
-                            <th>Valor Unitário</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-produtos">
-                        <!-- Produtos serão listados aqui -->
-                    </tbody>
-                </table>
+                <div class="lista-produtos-container">
+                    <table class="lista-produtos">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nome</th>
+                                <th>Quantidade</th>
+                                <th>Valor Unitário</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-produtos">
+                            <!-- Produtos serão listados aqui -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="right">
@@ -363,14 +372,22 @@
     document.getElementById('finalizaCompra').addEventListener('click', function() {
         const valorRecebido = parseFloat(document.getElementById('total-recebido').value.replace('R$', '').replace(',', '.'));
         const subtotal = parseFloat(document.getElementById('subtotal').innerText.replace('R$', '').replace(',', '.'));
-    
-        // Se o valor recebido for menor que o subtotal, não pode fechar a compra
+        const vendaId = this.getAttribute('data-venda-id');
         if (valorRecebido < subtotal) {
             alert('O valor recebido não pode ser menor que o subtotal da compra!');
             return;
         }
+
+        obterItensVenda(vendaId).then(itensVenda => {
+            console.log(itensVenda); 
+
+            if (itensVenda.length > 0) {
+                gerarNotaFiscal(vendaId);
+            } else {
+                alert('Não há itens de venda cadastrados.');
+            }
+        });
     
-        window.location.href = '/';
     });
 
     function gerarNotaFiscal(vendaId) {
