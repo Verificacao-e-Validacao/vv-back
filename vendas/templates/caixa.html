@@ -341,9 +341,34 @@
         document.getElementById('troco').innerText = `R$ ${troco.toFixed(2).replace('.', ',')}`;
     }
 
+    function obterItensVenda(vendaId) {
+        return fetch(`/api/item-venda/?venda=${vendaId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar itens da venda');
+                }
+                return response.json();
+            })
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                return [];
+            });
+    }
+
     document.getElementById('finalizaCompra').addEventListener('click', function() {
         const vendaId = this.getAttribute('data-venda-id');
-        gerarNotaFiscal(vendaId);
+        obterItensVenda(vendaId).then(itensVenda => {
+            console.log(itensVenda);
+
+            if (itensVenda.length > 0) {
+                gerarNotaFiscal(vendaId);
+            } else {
+                alert('Não há itens de venda cadastrados.');
+            }
+        });
     });
 
     function gerarNotaFiscal(vendaId) {

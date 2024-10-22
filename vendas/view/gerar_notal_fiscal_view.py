@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 from weasyprint import HTML
 from ..models import Venda
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import tempfile
 from django.contrib.auth.decorators import login_required
 
@@ -11,6 +11,9 @@ from django.contrib.auth.decorators import login_required
 def gerar_nota_fiscal(request, venda_id):
     venda = get_object_or_404(Venda, id=venda_id)
     itens_venda = venda.itens.all()
+
+    if not itens_venda:
+        return redirect(f'/caixa/?venda={venda_id}')
 
     # Calcula o total para cada item
     for item in itens_venda:
