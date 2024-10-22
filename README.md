@@ -12,6 +12,8 @@ Curso: [Bacharel em Engenharia de Software](https://engsoftwarepaudosferros.ufer
 
     Python 3.x
     Bibliotecas Python: podem ser encontradAs no arquivo requirements.txt
+## Usando Ferramenta Sonar:
+![image](https://github.com/user-attachments/assets/34c84382-ce26-4153-80c9-b8449c572937)
 
 ## Equipe
 
