@@ -28,6 +28,32 @@
                 console.error('Erro na requisição:', error);
             });
         }
+
+        function logout() {
+            window.location.href = "/admin/logout/";
+        }
+
+        function irParaAdmin() {
+            window.location.href = "/admin/"; // Ajuste conforme sua rota de admin
+        }
+
+        function toggleDropdown() {
+            const dropdownContent = document.querySelector('.dropdown-content');
+            dropdownContent.classList.toggle('show');
+        }
+
+        // Fecha o dropdown se o usuário clicar fora dele
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown-button')) {
+                const dropdowns = document.getElementsByClassName("dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
     </script>
     <style>
         body {
@@ -41,24 +67,73 @@
             position: relative;
         }
 
-        .logout-button {
+        /* Estilos do Dropdown */
+        .dropdown {
             position: absolute;
             top: 20px;
             right: 20px;
-            padding: 10px 20px;
-            font-size: 14px;
-            border: 2px solid #e74c3c;
-            background-color: transparent;
-            color: #e74c3c;
-            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            text-decoration: none;
+            z-index: 1000; /* Para garantir que o dropdown fique acima de outros elementos */
         }
 
-        .logout-button:hover {
-            background-color: #e74c3c;
-            color: #fff;
+        .dropdown-button {
+            padding: 10px 20px;
+            font-size: 14px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .dropdown-button:hover {
+            background-color: #2980b9;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 5px;
+            margin-top: 5px;
+            overflow: hidden; /* Para evitar que o conteúdo transborde */
+            animation: fadeIn 0.2s; /* Efeito de aparecimento */
+        }
+
+        .dropdown-content button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: none;
+            text-align: left;
+            color: #3498db;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-content button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        /* Efeito de fade-in */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .container {
@@ -69,6 +144,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             max-width: 400px;
             width: 100%;
+            margin: 20px; /* Adiciona margem em telas pequenas */
         }
 
         h1 {
@@ -93,10 +169,30 @@
             background-color: #0a3d62;
             color: #fff;
         }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            .dropdown-button {
+                width: 100%;
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 20px;
+                margin: 10px; /* Adiciona margem para telas pequenas */
+            }
+        }
     </style>
 </head>
 <body>
-    <a href="http://127.0.0.1:8000/admin/logout/" class="logout-button">Sair</a>
+    <!-- Dropdown com setinha -->
+    <div class="dropdown">
+        <button class="dropdown-button" onclick="toggleDropdown()">▼ Menu</button>
+        <div class="dropdown-content">
+            <button onclick="logout()">Sair</button>
+            <button onclick="irParaAdmin()">Ir para Admin</button>
+        </div>
+    </div>
 
     <div class="container">
         <h1>Bem-vindo à Página Inicial</h1>
