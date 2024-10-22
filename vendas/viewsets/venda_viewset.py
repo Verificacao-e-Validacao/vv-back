@@ -36,7 +36,7 @@ class VendaViewSet(viewsets.ModelViewSet):
             item_venda = ItemVenda.objects.create(venda=venda_atual,produto=produto,quantidade=quantidade,valor_unitario=produto.valor_venda)
         except Exception as e:
             print("Erro item venda",e)
-            return Response({"detail": "Erro ao adicionar item venda."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": str(e)}, status=status.HTTP_404_NOT_FOUND)
         
         venda_atual.save()
 
