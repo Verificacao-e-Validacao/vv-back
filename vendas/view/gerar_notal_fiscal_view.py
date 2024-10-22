@@ -5,7 +5,9 @@ from weasyprint import HTML
 from ..models import Venda
 from django.shortcuts import render
 import tempfile
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def gerar_nota_fiscal(request, venda_id):
     venda = get_object_or_404(Venda, id=venda_id)
     itens_venda = venda.itens.all()
