@@ -32,8 +32,9 @@ class Venda(models.Model):
     def save(self, *args, **kwargs):
         user = get_current_user()
 
-        self.vendedor_content_type = ContentType.objects.get_for_model(user)
-        self.vendedor_object_id = user.id
+        if not self.vendedor_content_type and not self.vendedor_object_id:
+            self.vendedor_content_type = ContentType.objects.get_for_model(user)
+            self.vendedor_object_id = user.id
 
         super().save(*args, **kwargs)
 
